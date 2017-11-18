@@ -25,7 +25,7 @@ SECRET_KEY = '5i+r#a78^$yo$x4h7*$bpjj=091-yx-$p$26d2jtvi)tuu*5+p'
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = True
 
-ALLOWED_HOSTS = []
+ALLOWED_HOSTS = ['10.16.56.70']
 
 
 # Application definition
@@ -37,6 +37,12 @@ INSTALLED_APPS = [
     'django.contrib.sessions',
     'django.contrib.messages',
     'django.contrib.staticfiles',
+    'django_filters',
+    'rest_framework',
+    'rest_framework_swagger',
+    'anadolucore',
+    'analyze',
+    'recommend'
 ]
 
 MIDDLEWARE = [
@@ -67,6 +73,15 @@ TEMPLATES = [
         },
     },
 ]
+
+REST_FRAMEWORK = {
+    # Use Django's standard `django.contrib.auth` permissions,
+    # or allow read-only access for unauthenticated users.
+    'DEFAULT_FILTER_BACKENDS': ('django_filters.rest_framework.DjangoFilterBackend',),
+    'DEFAULT_PERMISSION_CLASSES': [
+        'rest_framework.permissions.AllowAny'
+    ],
+}
 
 WSGI_APPLICATION = 'anadolusigortaapi.wsgi.application'
 
