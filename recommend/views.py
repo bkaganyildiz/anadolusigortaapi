@@ -101,9 +101,7 @@ def getCountMatrix(request):
 def getAssociationRules(request):
     body = request.body
     body = json.loads(body)
-    print "11111"
     readData()
-    print "22222"
 
     print "body: ", body
     lhs = map(lambda x: x['id'], body['first'])
@@ -117,6 +115,7 @@ def getAssociationRules(request):
         item['source'] = map(lambda x: descriptions[x]["label"], item['source'])
         item['confidence'] = "%.3f" % item['confidence']
         item['support'] = "%.3f" % item['support']
+        item['lift'] = "%.3f" % item['lift']
 
     ret = filter(lambda x: x['confidence'] >= minConfidence, ret)
     return Response(json.dumps({'associations': ret}))
