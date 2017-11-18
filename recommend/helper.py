@@ -18,12 +18,13 @@ class recommend_utils():
     def getCorrelationMatrix(train_data,y_indexes,x_indexes):
         import matplotlib.pyplot as plt
         import seaborn as sns
+        sns.set(font_scale=2)
         corr = train_data.corr()
         y_final = []
         for index in y_indexes:
             y_final.append(corr.columns[index])
         plt.subplots(figsize=(25,20))
-        plt.title('Correlation of Features')
+        plt.title('Correlation of Features', fontsize=25)
         abc = sns.heatmap(corr[y_final].iloc[x_indexes],
                     xticklabels=corr.columns[y_indexes],
                     yticklabels= corr.columns[x_indexes],
@@ -45,7 +46,9 @@ class recommend_utils():
     def getCountPlot(train_data,x):
         import matplotlib.pyplot as plt
         import seaborn as sns
+        sns.set(font_scale=2)
         plt.subplots(figsize=(25,15))
+        plt.title('Occurence of' + train_data.columns[x], fontsize=25)
         sns.countplot(x=train_data.columns[x], data=train_data)
         plt.savefig('count.png')
         with open("count.png", "rb") as f:
