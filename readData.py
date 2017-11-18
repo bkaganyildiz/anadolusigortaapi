@@ -5,40 +5,32 @@ TRAIN_DATA_FILENAME	= os.path.join(BASE_PATH, 'ticdata2000.txt')
 TEST_DATA_FILENAME	= os.path.join(BASE_PATH, 'ticeval2000.txt')
 EVAL_FILENAME = os.path.join(BASE_PATH, 'tictgts2000.txt')
 def readData():
-	'''
-		reads data and returns train and test data
-	'''
-	f = open(TRAIN_DATA_FILENAME, 'rb')
-	trainData = []
-	for line in f.readlines():
-		arr = line.strip().split('\t')
-		arr = map(lambda x: int(x), arr)
-		trainData.append(arr)
-	f.close()
+    '''
+        reads data and returns train and test data
+    '''
+    f = open(TRAIN_DATA_FILENAME, 'rb')
+    trainData = []
+    for line in f.readlines():
+        arr = line.strip().split('\t')
+        arr = map(lambda x: int(x), arr)
+        trainData.append(arr)
+    f.close()
 
-	f = open(TEST_DATA_FILENAME, 'rb')
-	testData = []
-	for line in f.readlines():
-		arr = line.strip().split('\t')
-		arr = map(lambda x: int(x), arr)
-		testData.append(arr)
-	f.close()
+    f = open(TEST_DATA_FILENAME, 'rb')
+    testData = []
+    for line in f.readlines():
+        arr = line.strip().split('\t')
+        arr = map(lambda x: int(x), arr)
+        testData.append(arr)
+    f.close()
 
-	f = open(EVAL_FILENAME, 'rb')
-	for index, val in enumerate(f.readlines()):
-		val = int(val)
-		testData[index].append(val)
-	f.close()
+    f = open(EVAL_FILENAME, 'rb')
+    for index, val in enumerate(f.readlines()):
+        val = int(val)
+        testData[index].append(val)
+    f.close()
 
-	return trainData, testData
+    return trainData, testData
+
 	
 trainData, testData = readData()
-'''
-print "trainData"
-for i in range(10):
-	print trainData[i][:10], "len(data): ", len(trainData[i])
-
-print "test Data"
-for i in range(10):
-	print testData[11][-1], "len(data): ", len(testData[i])
-'''
