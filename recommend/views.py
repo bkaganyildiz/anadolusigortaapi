@@ -101,9 +101,7 @@ def getCountMatrix(request):
 def getAssociationRules(request):
     body = request.body
     body = json.loads(body)
-    print "11111"
     readData()
-    print "22222"
 
     print "body: ", body
     lhs = map(lambda x: x['id'], body['first'])
