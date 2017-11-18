@@ -9,4 +9,6 @@ urlpatterns = [
     url('getAssociationRules/', getAssociationRules),
     url('getPolicyFields/', getPolicyFields),
     url('predictionSystem/', predictionSystem),
+    url(r'^results/$', RecommendationList.as_view()),
+    url(r'^results/(?P<pk>[0-9]+)$', RecommendationDetail.as_view()),
 ]
