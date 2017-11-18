@@ -98,6 +98,7 @@ class recommend_utils():
                         continue
                     else:
                         lhs_plus_rhs = item_left + [item_all]
+                        support_head = lenFinder(train_data, [item_all]) / N
                         support = recommend_utils.lenFinder(train_data, lhs_plus_rhs) / N
                         if minSupport < support:
                             confidence = recommend_utils.lenFinder(train_data, lhs_plus_rhs) / divider
@@ -105,7 +106,8 @@ class recommend_utils():
                                 'source': item_left,
                                 'dest': item_all,
                                 'support': support,
-                                'confidence': confidence
+                                'confidence': confidence,
+                                'lift': confidence / support_head
                             }
                             rules.append(association)
         sorted_rules = sorted(rules, key=lambda k: k['confidence'], reverse=True)
