@@ -58,10 +58,12 @@ def getCorMatrix(request):
     body = json.loads(body)
     readData()
 
+    descriptions = readDescriptions()
+    descriptions = map(lambda x: x['label'], descriptions)
     x_list = map(lambda x: x['id'], body['first'])
     y_list = map(lambda x: x['id'], body['second'])
 
-    ret = recommend_utils.getCorrelationMatrix(TRAIN_DATA, x_list, y_list)
+    ret = recommend_utils.getCorrelationMatrix(TRAIN_DATA, x_list, y_list, descriptions)
 
     return Response(json.dumps({'picture': ret}))
 
@@ -93,7 +95,9 @@ def getCountMatrix(request):
     print "body: ", body
     x_id = body['field']['id']
 
-    ret = recommend_utils.getCountPlot(TRAIN_DATA, x_id)
+    descriptions = readDescriptions()
+    descriptions = map(lambda x: x['label'], descriptions)
+    ret = recommend_utils.getCountPlot(TRAIN_DATA, x_id, descriptions)
 
     return Response(json.dumps({'picture': ret}))
 
@@ -131,6 +135,19 @@ def predictionSystem(request):
 
     return Response(json.dumps(retDict))
 
+
+@api_view(['POST',])
+def predictionUser(request):
+    body = request.body
+    body = json.loads(body)
+    readData(False)
+
+    x_list = map(lambda x: x['id'], body['first'])
+    retDict = {}
+    for item in RecommendationResult.objects.all():
+        retDict[item.name] = item.picture
+
+    return Response(json.dumps(retDict))
 
 def readDescriptions():
     FILE_NAME = os.path.join(BASE_PATH, "labels.txt")

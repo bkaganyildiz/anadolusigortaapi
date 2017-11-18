@@ -96,6 +96,7 @@ def predictionSystem(inp_trainData, inp_testData):
 
     nameList = ["accuracy", "specificity", "sensitivity", "tp"]
     retDict = {}
+    RecommendationResult.objects.all().delete()
     for index, name in enumerate(nameList):
         bayes_values = map(lambda x: x[index], bayes_scores)
         mlp_values = map(lambda x: x[index], mlp_scores)
@@ -129,7 +130,7 @@ def drawPrediction(y_name, y_1, y_2, y_3, x_values):
     plt.title('# of Features vs %s' % y_name.title(), fontsize=30)
     sns.set(font_scale=2)
     sns.pointplot(x='Number of Features', y=y_name, hue="Algorithm", data=df)
-    plt.savefig('prediction.png')
+    plt.savefig('prediction.png', transparent=False)
     with open("prediction.png", "rb") as f:
         data = f.read()
         encodedString = data.encode("base64")

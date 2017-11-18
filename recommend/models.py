@@ -18,11 +18,11 @@ class RecommendationResult(models.Model):
     def set_bayes(self, list):
         self.bayes_values = json.dumps(list)
     def set_mlp(self, list):
-        self.bayes_values = json.dumps(list)
+        self.mlp_values = json.dumps(list)
     def set_dt(self, list):
-        self.bayes_values = json.dumps(list)
+        self.dt_values = json.dumps(list)
     def set_features(self, list):
-        self.bayes_values = json.dumps(list)
+        self.number_of_features = json.dumps(list)
     def get_bayes(self):
         return json.dump(self.bayes_values)
     def get_bayes(self):

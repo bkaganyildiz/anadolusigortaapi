@@ -15,7 +15,7 @@ from sklearn.naive_bayes import GaussianNB
 
 class recommend_utils():
     @staticmethod
-    def getCorrelationMatrix(train_data,y_indexes,x_indexes):
+    def getCorrelationMatrix(train_data,y_indexes,x_indexes, description):
         import matplotlib.pyplot as plt
         import seaborn as sns
         sns.set(font_scale=2)
@@ -25,9 +25,12 @@ class recommend_utils():
             y_final.append(corr.columns[index])
         plt.subplots(figsize=(25,20))
         plt.title('Correlation of Features', fontsize=25)
+        x_names = [description[x] for x in x_indexes]
+        y_names = [description[y] for y in y_indexes]
+
         abc = sns.heatmap(corr[y_final].iloc[x_indexes],
-                    xticklabels=corr.columns[y_indexes],
-                    yticklabels= corr.columns[x_indexes],
+                    xticklabels=y_names,
+                    yticklabels=x_names,
                     annot=True,
                      linewidths=.5,
                      square=True,
@@ -43,12 +46,12 @@ class recommend_utils():
             return encodedString
 
     @staticmethod
-    def getCountPlot(train_data,x):
+    def getCountPlot(train_data,x, description):
         import matplotlib.pyplot as plt
         import seaborn as sns
         sns.set(font_scale=2)
         plt.subplots(figsize=(25,15))
-        plt.title('Occurence of' + train_data.columns[x], fontsize=25)
+        plt.title('Occurence of ' + str(description[x]), fontsize=25)
         sns.countplot(x=train_data.columns[x], data=train_data)
         plt.savefig('count.png')
         with open("count.png", "rb") as f:
@@ -148,45 +151,25 @@ class recommend_utils():
         return list(x_normed)
 
     @staticmethod
-    def predictionSystem(inp_trainData, inp_testData, numberOfFeatures):
+    def predictUser(inp_trainData, inp_testData, userValues):
         _trainData, trainLabels = recommend_utils.getDataAndLabels(inp_trainData)
         _testData, testLabels = recommend_utils.getDataAndLabels(inp_testData)
 
-        numberOfFeatures = range(10, 70, 10)
-        mlp_scores = []
         bayes_scores = []
-        dt_scores = []
-        for numberOfFeature in numberOfFeatures:
-            # Feature selection
-            selectedFeaturesIndexes = recommend_utils.featureSelection(_trainData, trainLabels, numberOfFeature)
-            # Creating new train and test data
-            trainData = recommend_utils.createNewDataFromSelectedFeatures(_trainData, selectedFeaturesIndexes)
-            testData = recommend_utils.createNewDataFromSelectedFeatures(_testData, selectedFeaturesIndexes)
-            # Normalization
-            trainData = recommend_utils.normalizeData(trainData)
-            testData = recommend_utils.normalizeData(testData)
-            ret = recommend_utils.predictionSystem_Helper(trainData, trainLabels, testData, testLabels, type=1)
-            mlp_scores.append(ret)
-            ret = recommend_utils.predictionSystem_Helper(trainData, trainLabels, testData, testLabels, type=2)
-            bayes_scores.append(ret)
-            ret = recommend_utils.predictionSystem_Helper(trainData, trainLabels, testData, testLabels, type=3)
-            dt_scores.append(ret)
+        # Feature selection
+        selectedFeaturesIndexes = []
+        # Creating new train and test data
+        trainData = recommend_utils.createNewDataFromSelectedFeatures(_trainData, selectedFeaturesIndexes)
+        testData = recommend_utils.createNewDataFromSelectedFeatures(_testData, selectedFeaturesIndexes)
+        # Normalization
+        trainData = recommend_utils.normalizeData(trainData)
+        testData = recommend_utils.normalizeData(testData)
+        clf = recommend_utils.predictionSystem_Helper(trainData, trainLabels, testData, testLabels, type=2)
+        ret = clf.predict(userValues)
+        print "ret: ", ret
 
-        nameList = ["accuracy", "specificity", "sensitivity", "tp"]
+
         retDict = {}
-        for index, name in enumerate(nameList):
-            bayes_values = map(lambda x: x[index], bayes_scores)
-            mlp_values = map(lambda x: x[index], mlp_scores)
-            dt_values = map(lambda x: x[index], dt_scores)
-            print "len(bayes_values): ", len(bayes_values)
-            print "len(mlp_values): ", len(mlp_values)
-            print "len(dt_values): ", len(dt_values)
-            print "len(numberOfFeatures): ", len(numberOfFeatures)
-            print "numberOfFeatures: ", numberOfFeatures
-            print "name: ", name
-            retDict[name] = recommend_utils.drawPrediction(name, bayes_values, mlp_values, dt_values, numberOfFeatures)
-
-        return retDict
 
     @staticmethod
     def drawPrediction(y_name, y_1, y_2, y_3, x_values):
@@ -209,14 +192,8 @@ class recommend_utils():
             return encodedString
 
     @staticmethod
-    def predictionSystem_Helper(trainData, trainLabels, testData, testLabels, type=1):
-        if type == 1:
-            clf = MLPClassifier(verbose=False, solver='sgd', alpha=1e-5, hidden_layer_sizes=(50,), random_state=1, max_iter=200)
-        elif type == 2:
-            clf = GaussianNB()
-        else:
-            clf = DecisionTreeClassifier()
-
+    def predictionSystem_Helper(trainData, trainLabels, testData, testLabels, type, ):
+        clf = GaussianNB()
         clf.fit(trainData, trainLabels)
 
         predictionResults = clf.predict(testData)
@@ -246,5 +223,6 @@ class recommend_utils():
         print "tp: ", tp
         print "list(predictionResults[i]).count(1): ", list(predictionResults).count(1)
         print "testLabels.count(1): ", list(testLabels).count(1)
-        return accuracy, specificity, sensitivity, tp
+
+        return clf
 
