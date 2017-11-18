@@ -175,6 +175,7 @@ def readData(getNumpy=True):
         testData.append(arr)
     f.close()
 
+
     f = open(EVAL_FILENAME, 'rb')
     for index, val in enumerate(f.readlines()):
         val = int(val)
