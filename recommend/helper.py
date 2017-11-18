@@ -98,7 +98,7 @@ class recommend_utils():
                         continue
                     else:
                         lhs_plus_rhs = item_left + [item_all]
-                        support_head = lenFinder(train_data, [item_all]) / N
+                        support_head = recommend_utils.lenFinder(train_data, [item_all]) / N
                         support = recommend_utils.lenFinder(train_data, lhs_plus_rhs) / N
                         if minSupport < support:
                             confidence = recommend_utils.lenFinder(train_data, lhs_plus_rhs) / divider
@@ -144,41 +144,78 @@ class recommend_utils():
         return list(x_normed)
 
     @staticmethod
-    def predictionSystem(inp_trainData, inp_testData):
-        print "data getting 1"
+    def predictionSystem(inp_trainData, inp_testData, numberOfFeatures):
         _trainData, trainLabels = recommend_utils.getDataAndLabels(inp_trainData)
         _testData, testLabels = recommend_utils.getDataAndLabels(inp_testData)
-        print "data getting 2"
 
+        numberOfFeatures = range(10, 70, 10)
         mlp_scores = []
-        #numberOfFeatures = [10, 20, 30, 50, 60, 70, 80]
-        numberOfFeatures = [10, 20]
+        bayes_scores = []
+        dt_scores = []
         for numberOfFeature in numberOfFeatures:
             # Feature selection
             selectedFeaturesIndexes = recommend_utils.featureSelection(_trainData, trainLabels, numberOfFeature)
-            print "selectedFeaturesIndexes: ", selectedFeaturesIndexes
             # Creating new train and test data
             trainData = recommend_utils.createNewDataFromSelectedFeatures(_trainData, selectedFeaturesIndexes)
             testData = recommend_utils.createNewDataFromSelectedFeatures(_testData, selectedFeaturesIndexes)
             # Normalization
             trainData = recommend_utils.normalizeData(trainData)
             testData = recommend_utils.normalizeData(testData)
-            score = recommend_utils.predictionSystem_MLP(trainData, trainLabels, testData, testLabels)
-            mlp_scores.append(score)
-        return mlp_scores
+            ret = recommend_utils.predictionSystem_Helper(trainData, trainLabels, testData, testLabels, type=1)
+            mlp_scores.append(ret)
+            ret = recommend_utils.predictionSystem_Helper(trainData, trainLabels, testData, testLabels, type=2)
+            bayes_scores.append(ret)
+            ret = recommend_utils.predictionSystem_Helper(trainData, trainLabels, testData, testLabels, type=3)
+            dt_scores.append(ret)
 
+        nameList = ["accuracy", "specificity", "sensitivity", "tp"]
+        retDict = {}
+        for index, name in enumerate(nameList):
+            bayes_values = map(lambda x: x[index], bayes_scores)
+            mlp_values = map(lambda x: x[index], mlp_scores)
+            dt_values = map(lambda x: x[index], dt_scores)
+            print "len(bayes_values): ", len(bayes_values)
+            print "len(mlp_values): ", len(mlp_values)
+            print "len(dt_values): ", len(dt_values)
+            print "len(numberOfFeatures): ", len(numberOfFeatures)
+            print "numberOfFeatures: ", numberOfFeatures
+            print "name: ", name
+            retDict[name] = recommend_utils.drawPrediction(name, bayes_values, mlp_values, dt_values, numberOfFeatures)
+
+        return retDict
 
     @staticmethod
-    def predictionSystem_MLP(trainData, trainLabels, testData, testLabels):
-        #clf = MLPClassifier(verbose=False, solver='adam', alpha=1e-5, hidden_layer_sizes=(50,), random_state=1, max_iter=200)
-        clf = GaussianNB()
+    def drawPrediction(y_name, y_1, y_2, y_3, x_values):
+        import matplotlib
+        matplotlib.use("qt4agg")
+        import matplotlib.pyplot as plt
+        import seaborn as sns
+        import pandas as pd
+        algorithm = ['Bayes'] * 6 + ['NN'] * 6 + ['Decision Tree'] * 6
+        d = {y_name: y_1 + y_2 + y_3, 'Number of Features': x_values * 3, 'Algorithm': algorithm}
+        df = pd.DataFrame(data=d)
+        plt.subplots(figsize=(25, 15))
+        plt.title('# of Features vs %s' % y_name.title(), fontsize=30)
+        sns.set(font_scale=2)
+        sns.pointplot(x='Number of Features', y=y_name, hue="Algorithm", data=df)
+        plt.savefig('prediction.png')
+        with open("prediction.png", "rb") as f:
+            data = f.read()
+            encodedString = data.encode("base64")
+            return encodedString
+
+    @staticmethod
+    def predictionSystem_Helper(trainData, trainLabels, testData, testLabels, type=1):
+        if type == 1:
+            clf = MLPClassifier(verbose=False, solver='sgd', alpha=1e-5, hidden_layer_sizes=(50,), random_state=1, max_iter=200)
+        elif type == 2:
+            clf = GaussianNB()
+        else:
+            clf = DecisionTreeClassifier()
+
         clf.fit(trainData, trainLabels)
 
-        score = clf.score(testData, testLabels)
-        print "score: ", score
         predictionResults = clf.predict(testData)
-        c1 = 0
-        c2 = 0
         tp, fp, tn, fn = 0, 0, 0, 0
         accuracy = 0
         for i in range(len(testLabels)):
@@ -198,10 +235,12 @@ class recommend_utils():
         sensitivity = float(tp) / float(tp + fn)
         specificity = float(tn) / float(fp + tn)
 
-
+        print "type: ", type
+        print "accuracy: ", accuracy
+        print "sensitivity: ", sensitivity
+        print "specificity: ", specificity
+        print "tp: ", tp
         print "list(predictionResults[i]).count(1): ", list(predictionResults).count(1)
-        print "c1: ", c1, " c2: ", c2
-        print "set(testLabels): ", set(testLabels)
-        print "testLabels.count(1): ", np.count_nonzero(testLabels == 1)
-        print "len(testLabels): ", len(testLabels)
-        return score
+        print "testLabels.count(1): ", list(testLabels).count(1)
+        return accuracy, specificity, sensitivity, tp
+
