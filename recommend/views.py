@@ -21,18 +21,7 @@ def getAllFields(request):
     """
     Retrieve, update or delete a code snippet.
     """
-    FILE_NAME = os.path.join(BASE_PATH, "labels.txt")
-    f = open(str(FILE_NAME), str('rb'))
-    retValues = []
-    for line in f.readlines():
-        line = unicode(line)
-        line = line.strip()
-        if not line:
-            continue
-        arr = line.split(' ')
-        id = int(arr[0]) - 1
-        label = ' '.join(arr[2:])
-        retValues.append({'id': id, 'label': label})
+    retValues = readDescriptions()
 
     ret = json.dumps(retValues)
     return Response(ret)
@@ -56,14 +45,46 @@ def getDistMatrix(request):
     body = json.loads(body)
     readData()
 
-    x_list = map(lambda x: x['id'], body['first'])
-    y_list = map(lambda x: x['id'], body['second'])
-    x_id = x_list[0]
-    y_id = y_list[0]
+    x_id = body['first']['id']
+    y_id = body['second']['id']
+    # x_list = map(lambda x: x['id'], body['first'])
+    # y_list = map(lambda x: x['id'], body['second'])
+    # x_id = x_list[0]
+    # y_id = y_list[0]
 
-    ret = recommend_utils.getViolinPlot(TRAIN_DATA, x_id, y_id)
+    descriptions = readDescriptions()
+    descriptions = map(lambda x: x['label'], descriptions)
+    ret = recommend_utils.getViolinPlot(TRAIN_DATA, descriptions, x_id, y_id)
 
     return Response(json.dumps({'picture': ret}))
+
+@api_view(['POST',])
+def getCountMatrix(request):
+    body = request.body
+    body = json.loads(body)
+    readData()
+
+    print "body: ", body
+    x_id = body['field']['id']
+
+    ret = recommend_utils.getCountPlot(TRAIN_DATA, x_id)
+
+    return Response(json.dumps({'picture': ret}))
+
+def readDescriptions():
+    FILE_NAME = os.path.join(BASE_PATH, "labels.txt")
+    f = open(str(FILE_NAME), str('rb'))
+    retValues = []
+    for line in f.readlines():
+        line = unicode(line)
+        line = line.strip()
+        if not line:
+            continue
+        arr = line.split(' ')
+        id = int(arr[0]) - 1
+        label = ' '.join(arr[2:])
+        retValues.append({'id': id, 'label': label})
+    return retValues
 
 def readData():
     '''
@@ -76,11 +97,6 @@ def readData():
     TEST_DATA_FILENAME = str(os.path.join(BASE_PATH, 'ticeval2000.txt'))
     EVAL_FILENAME = str(os.path.join(BASE_PATH, 'tictgts2000.txt'))
 
-    print "*" * 30
-    print "*" * 30
-    print "TEST VE TRAIN DATA BULUNAMADI"
-    print "*" * 30
-    print "*" * 30
     f = open(TRAIN_DATA_FILENAME, 'rb')
     trainData = []
     for line in f.readlines():

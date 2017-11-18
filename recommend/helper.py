@@ -39,7 +39,7 @@ class recommend_utils():
         import matplotlib.pyplot as plt
         import seaborn as sns
         plt.subplots(figsize=(25,15))
-        sns.countplot(x=train_data.columns[x], data=train_data);
+        sns.countplot(x=train_data.columns[x], data=train_data)
         plt.savefig('count.png')
         with open("count.png", "rb") as f:
             data = f.read()
@@ -47,11 +47,11 @@ class recommend_utils():
             return encodedString
 
     @staticmethod
-    def getViolinPlot(train_data,x,y):
+    def getViolinPlot(train_data,descriptions, x,y):
         import matplotlib.pyplot as plt
         import seaborn as sns
         plt.subplots(figsize=(25,15))
-        plt.title(train_data.columns[x] + ' vs ' + train_data.columns[y])
+        plt.title(str(descriptions[x]) + ' vs ' + str(descriptions[y]))
         sns.violinplot(x=train_data.columns[x], y=train_data.columns[y], data=train_data,split=True)
         plt.savefig('violin.png')
         with open("violin.png", "rb") as f:
