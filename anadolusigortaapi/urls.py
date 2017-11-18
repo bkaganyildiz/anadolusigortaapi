@@ -25,4 +25,5 @@ urlpatterns = [
     url(r'^api/core/', include('anadolucore.urls')),
     #url(r'^api/recommend/', include('recommend.urls')),
     #url(r'^api/analyze/', include('analyze.urls')),
+    url(r'^recommend/', include('recommend.urls')),
 ]
