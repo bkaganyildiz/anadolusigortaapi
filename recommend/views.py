@@ -26,6 +26,16 @@ def getAllFields(request):
     ret = json.dumps(retValues)
     return Response(ret)
 
+@api_view(['GET',])
+def getPolicyFields(request):
+    """
+    Retrieve, update or delete a code snippet.
+    """
+    retValues = readDescriptions()
+
+    ret = json.dumps(retValues[64:])
+    return Response(ret)
+
 @api_view(['POST',])
 def getCorMatrix(request):
     body = request.body
@@ -71,6 +81,38 @@ def getCountMatrix(request):
 
     return Response(json.dumps({'picture': ret}))
 
+@api_view(['POST',])
+def getAssociationRules(request):
+    body = request.body
+    body = json.loads(body)
+    readData()
+
+    print "body: ", body
+    lhs = map(lambda x: x['id'], body['first'])
+    minSupport = float(body['minSupport'])
+    minConfidence = float(body['minConfidence'])
+    descriptions = readDescriptions()
+
+    ret = recommend_utils.associationFinder(TRAIN_DATA, lhs, minSupport)
+    for item in ret:
+        item['dest'] = descriptions[item['dest']]["label"]
+        item['source'] = map(lambda x: descriptions[x]["label"], item['source'])
+        item['confidence'] = "%.3f" % item['confidence']
+        item['support'] = "%.3f" % item['support']
+
+    ret = filter(lambda x: x['confidence'] >= minConfidence, ret)
+    return Response(json.dumps({'associations': ret}))
+
+@api_view(['GET',])
+def predictionSystem(request):
+    body = request.body
+    readData(False)
+
+    score = recommend_utils.predictionSystem(TRAIN_DATA, TEST_DATA)
+
+    return Response(json.dumps({'score': score}))
+
+
 def readDescriptions():
     FILE_NAME = os.path.join(BASE_PATH, "labels.txt")
     f = open(str(FILE_NAME), str('rb'))
@@ -86,7 +128,7 @@ def readDescriptions():
         retValues.append({'id': id, 'label': label})
     return retValues
 
-def readData():
+def readData(getNumpy=True):
     '''
     reads data and returns train and test data
     '''
@@ -119,5 +161,9 @@ def readData():
         testData[index].append(val)
     f.close()
 
-    TRAIN_DATA = pd.DataFrame(data=trainData)
-    TEST_DATA = pd.DataFrame(data=testData)
+    if getNumpy:
+        TRAIN_DATA = pd.DataFrame(data=trainData)
+        TEST_DATA = pd.DataFrame(data=testData)
+    else:
+        TRAIN_DATA = trainData
+        TEST_DATA = testData

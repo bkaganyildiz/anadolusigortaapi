@@ -6,5 +6,7 @@ urlpatterns = [
     url('getCorMatrix/', getCorMatrix),
     url('getDistMatrix/', getDistMatrix),
     url('getCountMatrix/', getCountMatrix),
-
+    url('getAssociationRules/', getAssociationRules),
+    url('getPolicyFields/', getPolicyFields),
+    url('predictionSystem/', predictionSystem),
 ]
