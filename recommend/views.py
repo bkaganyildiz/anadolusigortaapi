@@ -2,20 +2,35 @@
 from __future__ import unicode_literals
 import json
 import os
+
+import django_filters
 import numpy as np
 import pandas as pd
+from .serializers import RecommendationResultSerializer
+from .models import RecommendationResult
 from django.shortcuts import render
 
 # Create your views here.
+from rest_framework import generics
 from rest_framework.decorators import api_view
 from rest_framework.response import Response
 from helper import recommend_utils
 from anadolucore.util import get_matrix_data
+from .models import RecommendationResult
 
 BASE_PATH = os.path.join("datasets", "tic2000")
 
 TEST_DATA = None
 TRAIN_DATA = None
+
+class RecommendationList(generics.ListCreateAPIView):
+    queryset = RecommendationResult.objects.all()
+    serializer_class = RecommendationResultSerializer
+    filter_backends = (django_filters.rest_framework.DjangoFilterBackend,)
+
+class RecommendationDetail(generics.RetrieveUpdateDestroyAPIView):
+    queryset = RecommendationResult.objects.all()
+    serializer_class = RecommendationResultSerializer
 
 @api_view(['GET',])
 def getAllFields(request):
@@ -111,9 +126,11 @@ def predictionSystem(request):
     body = request.body
     readData(False)
 
-    score = recommend_utils.predictionSystem(TRAIN_DATA, TEST_DATA)
+    retDict = {}
+    for item in RecommendationResult.objects.all():
+        retDict[item.name] = item.picture
 
-    return Response(json.dumps({'score': score}))
+    return Response(json.dumps(retDict))
 
 
 def readDescriptions():
