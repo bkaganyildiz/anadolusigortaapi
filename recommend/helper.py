@@ -151,25 +151,21 @@ class recommend_utils():
         return list(x_normed)
 
     @staticmethod
-    def predictUser(inp_trainData, inp_testData, userValues):
+    def predictUser(inp_trainData, inp_testData, userValues, selectedFeaturesIndexes):
         _trainData, trainLabels = recommend_utils.getDataAndLabels(inp_trainData)
         _testData, testLabels = recommend_utils.getDataAndLabels(inp_testData)
 
-        bayes_scores = []
-        # Feature selection
-        selectedFeaturesIndexes = []
         # Creating new train and test data
         trainData = recommend_utils.createNewDataFromSelectedFeatures(_trainData, selectedFeaturesIndexes)
         testData = recommend_utils.createNewDataFromSelectedFeatures(_testData, selectedFeaturesIndexes)
         # Normalization
         trainData = recommend_utils.normalizeData(trainData)
         testData = recommend_utils.normalizeData(testData)
-        clf = recommend_utils.predictionSystem_Helper(trainData, trainLabels, testData, testLabels, type=2)
+        clf, retDict = recommend_utils.predictionSystem_Helper(trainData, trainLabels, testData, testLabels, type=2)
         ret = clf.predict(userValues)
-        print "ret: ", ret
-
-
-        retDict = {}
+        print "ret: ", ret[0]
+        retDict['prediction'] = ret[0]
+        return retDict
 
     @staticmethod
     def drawPrediction(y_name, y_1, y_2, y_3, x_values):
@@ -212,10 +208,10 @@ class recommend_utils():
             if int(testLabels[i]) == int(predictionResults[i]):
                 accuracy += 1
 
+
         accuracy = float(tp + tn) / float(tp + fp + tn + fn)
         sensitivity = float(tp) / float(tp + fn)
         specificity = float(tn) / float(fp + tn)
-
         print "type: ", type
         print "accuracy: ", accuracy
         print "sensitivity: ", sensitivity
@@ -224,5 +220,8 @@ class recommend_utils():
         print "list(predictionResults[i]).count(1): ", list(predictionResults).count(1)
         print "testLabels.count(1): ", list(testLabels).count(1)
 
-        return clf
+        retDict = {"accuracy": "%.3f" % accuracy, "sensitivity": "%.3f" % sensitivity, "specificity": "%.3f" % specificity,
+                   "tp": tp, "tp_fp": tp + fp, "total": list(testLabels).count(1)}
+
+        return clf, retDict
 

@@ -137,16 +137,16 @@ def predictionSystem(request):
 
 
 @api_view(['POST',])
-def predictionUser(request):
+def predictUser(request):
     body = request.body
     body = json.loads(body)
     readData(False)
 
-    x_list = map(lambda x: x['id'], body['first'])
-    retDict = {}
-    for item in RecommendationResult.objects.all():
-        retDict[item.name] = item.picture
-
+    selectedFeatures = [0, 9, 30, 31, 41, 42]
+    userValues = []
+    for item in selectedFeatures:
+        userValues.append(body[str(item)])
+    retDict = recommend_utils.predictUser(TRAIN_DATA, TEST_DATA, userValues, selectedFeatures)
     return Response(json.dumps(retDict))
 
 def readDescriptions():
