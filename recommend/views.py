@@ -45,8 +45,6 @@ def getCorMatrix(request):
 
     x_list = map(lambda x: x['id'], body['first'])
     y_list = map(lambda x: x['id'], body['second'])
-    print "x_list: ", x_list
-    print "y_list: ", y_list
 
     ret = recommend_utils.getCorrelationMatrix(TRAIN_DATA, x_list, y_list)
 
@@ -58,8 +56,10 @@ def getDistMatrix(request):
     body = json.loads(body)
     readData()
 
-    x_id = body['first'][0]
-    y_id = map(lambda x: x['id'], body['first'])
+    x_list = map(lambda x: x['id'], body['first'])
+    y_list = map(lambda x: x['id'], body['second'])
+    x_id = x_list[0]
+    y_id = y_list[0]
 
     ret = recommend_utils.getViolinPlot(TRAIN_DATA, x_id, y_id)
 
@@ -76,41 +76,32 @@ def readData():
     TEST_DATA_FILENAME = str(os.path.join(BASE_PATH, 'ticeval2000.txt'))
     EVAL_FILENAME = str(os.path.join(BASE_PATH, 'tictgts2000.txt'))
 
-    if not TEST_DATA or not TRAIN_DATA:
-        print "*" * 30
-        print "*" * 30
-        print "TEST VE TRAIN DATA BULUNAMADI"
-        print "*" * 30
-        print "*" * 30
-        f = open(TRAIN_DATA_FILENAME, 'rb')
-        trainData = []
-        for line in f.readlines():
-            arr = line.strip().split('\t')
-            arr = map(lambda x: int(x), arr)
-            trainData.append(arr)
-        f.close()
+    print "*" * 30
+    print "*" * 30
+    print "TEST VE TRAIN DATA BULUNAMADI"
+    print "*" * 30
+    print "*" * 30
+    f = open(TRAIN_DATA_FILENAME, 'rb')
+    trainData = []
+    for line in f.readlines():
+        arr = line.strip().split('\t')
+        arr = map(lambda x: int(x), arr)
+        trainData.append(arr)
+    f.close()
 
-        f = open(TEST_DATA_FILENAME, 'rb')
-        testData = []
-        for line in f.readlines():
-            arr = line.strip().split('\t')
-            arr = map(lambda x: int(x), arr)
-            testData.append(arr)
-        f.close()
+    f = open(TEST_DATA_FILENAME, 'rb')
+    testData = []
+    for line in f.readlines():
+        arr = line.strip().split('\t')
+        arr = map(lambda x: int(x), arr)
+        testData.append(arr)
+    f.close()
 
-        f = open(EVAL_FILENAME, 'rb')
-        for index, val in enumerate(f.readlines()):
-            val = int(val)
-            testData[index].append(val)
-        f.close()
+    f = open(EVAL_FILENAME, 'rb')
+    for index, val in enumerate(f.readlines()):
+        val = int(val)
+        testData[index].append(val)
+    f.close()
 
-        for i in range(10):
-            print trainData[i][:10]
-        TRAIN_DATA = pd.DataFrame(data=trainData)
-        TEST_DATA = pd.DataFrame(data=testData)
-    else:
-        print "*" * 30
-        print "*" * 30
-        print "TEST VE TRAIN DATA BULUNAMADI"
-        print "*" * 30
-        print "*" * 30
+    TRAIN_DATA = pd.DataFrame(data=trainData)
+    TEST_DATA = pd.DataFrame(data=testData)

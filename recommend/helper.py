@@ -1,13 +1,16 @@
+"""
 import numpy as np
 import pandas as pd
 import matplotlib as mpl
 import matplotlib.pyplot as plt
 import base64
 import seaborn as sns
-
+"""
 class recommend_utils():
     @staticmethod
     def getCorrelationMatrix(train_data,y_indexes,x_indexes):
+        import matplotlib.pyplot as plt
+        import seaborn as sns
         corr = train_data.corr()
         y_final = []
         for index in y_indexes:
@@ -21,8 +24,11 @@ class recommend_utils():
                      linewidths=.5,
                      square=True,
                      cmap="Blues")
-
         plt.savefig('correlation.png')
+        plt.clf()
+        plt.close()
+        plt.close('all')
+
         with open("correlation.png", "rb") as f:
             data = f.read()
             encodedString =  data.encode("base64")
@@ -30,6 +36,8 @@ class recommend_utils():
 
     @staticmethod
     def getCountPlot(train_data,x):
+        import matplotlib.pyplot as plt
+        import seaborn as sns
         plt.subplots(figsize=(25,15))
         sns.countplot(x=train_data.columns[x], data=train_data);
         plt.savefig('count.png')
@@ -40,9 +48,11 @@ class recommend_utils():
 
     @staticmethod
     def getViolinPlot(train_data,x,y):
+        import matplotlib.pyplot as plt
+        import seaborn as sns
         plt.subplots(figsize=(25,15))
         plt.title(train_data.columns[x] + ' vs ' + train_data.columns[y])
-        sns.violinplot(x=train_data.columns[x], y=train_data.columns[y], data=train_data,split=True);
+        sns.violinplot(x=train_data.columns[x], y=train_data.columns[y], data=train_data,split=True)
         plt.savefig('violin.png')
         with open("violin.png", "rb") as f:
             data = f.read()
