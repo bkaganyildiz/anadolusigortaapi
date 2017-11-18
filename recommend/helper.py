@@ -59,9 +59,10 @@ class recommend_utils():
         matplotlib.use("qt4agg")
         import matplotlib.pyplot as plt
         import seaborn as sns
+        sns.set(font_scale=2)
         plt.subplots(figsize=(25,15))
-        plt.title(str(descriptions[x]) + ' vs ' + str(descriptions[y]))
-        sns.violinplot(x=train_data.columns[x], y=train_data.columns[y], data=train_data,split=True)
+        plt.title(str(descriptions[x]) + ' vs ' + str(descriptions[y]),fontsize=25)
+        sns.barplot(x=train_data.columns[x], y=train_data.columns[y], data=train_data, ci=None)
         plt.savefig('violin.png')
         with open("violin.png", "rb") as f:
             data = f.read()
