@@ -48,6 +48,8 @@ class recommend_utils():
 
     @staticmethod
     def getViolinPlot(train_data,descriptions, x,y):
+        import matplotlib
+        matplotlib.use("qt4agg")
         import matplotlib.pyplot as plt
         import seaborn as sns
         plt.subplots(figsize=(25,15))
