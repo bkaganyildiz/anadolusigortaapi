@@ -25,7 +25,11 @@ SECRET_KEY = '5i+r#a78^$yo$x4h7*$bpjj=091-yx-$p$26d2jtvi)tuu*5+p'
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = True
 
-ALLOWED_HOSTS = ['localhost', '0.0.0.0', '10.16.56.78']
+ALLOWED_HOSTS = ['localhost', '0.0.0.0', '10.16.56.78', '10.16.56.70']
+BLUEMIX_SECRET_KEY = "fN2sV7iT6gV7wS1kN6kJ3cT7lR5cD8lT6vB7nO5rB7iG5tW3aM"
+BLUEMIX_CLIENT_ID = "2b5025a8-ab6d-41a3-a9b2-b7396bb203f7"
+BLUEMIX_CLIENT_SECRET = ""
+
 
 
 # Application definition
