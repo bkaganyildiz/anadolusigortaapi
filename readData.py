@@ -72,7 +72,7 @@ for index, row in enumerate(trainData):
     c.save()
 
 for index, row in enumerate(testData):
-    dataDict = {"index": index, "isTest": False}
+    dataDict = {"index": index, "isTest": True}
     for i, key in enumerate(nameList):
         row[i] = int(row[i])
         if i == 0:

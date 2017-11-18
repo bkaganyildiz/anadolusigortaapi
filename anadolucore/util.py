@@ -92,6 +92,5 @@ def get_matrix_data(test):
         customer_list.append(customer.number_property_insurance_policies)
         customer_list.append(customer.number_social_security_insurance_policies)
         customer_list.append(customer.number_mobile_home_policies)
-        print (len(customer_list))
-        customers_list.append(customers_list)
+        customers_list.append(customer_list)
     return customers_list

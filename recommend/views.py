@@ -10,6 +10,7 @@ from django.shortcuts import render
 from rest_framework.decorators import api_view
 from rest_framework.response import Response
 from helper import recommend_utils
+from anadolucore.util import get_matrix_data
 
 BASE_PATH = os.path.join("datasets", "tic2000")
 
@@ -85,7 +86,9 @@ def getCountMatrix(request):
 def getAssociationRules(request):
     body = request.body
     body = json.loads(body)
+    print "11111"
     readData()
+    print "22222"
 
     print "body: ", body
     lhs = map(lambda x: x['id'], body['first'])
@@ -161,6 +164,8 @@ def readData(getNumpy=True):
         testData[index].append(val)
     f.close()
 
+    # trainData = get_matrix_data(False)
+    # testData = get_matrix_data(True)
     if getNumpy:
         TRAIN_DATA = pd.DataFrame(data=trainData)
         TEST_DATA = pd.DataFrame(data=testData)
