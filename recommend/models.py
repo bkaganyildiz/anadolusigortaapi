@@ -33,3 +33,6 @@ class RecommendationResult(models.Model):
         return json.dump(self.bayes_values)
     def get_features(self):
         return json.dump(self.bayes_values)
+
+    def __unicode__(self):
+        return self.name

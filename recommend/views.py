@@ -16,6 +16,7 @@ from rest_framework.decorators import api_view
 from rest_framework.response import Response
 from helper import recommend_utils
 from anadolucore.util import get_matrix_data
+from .models import RecommendationResult
 
 BASE_PATH = os.path.join("datasets", "tic2000")
 
@@ -125,9 +126,11 @@ def predictionSystem(request):
     body = request.body
     readData(False)
 
-    score = recommend_utils.predictionSystem(TRAIN_DATA, TEST_DATA)
+    retDict = {}
+    for item in RecommendationResult.objects.all():
+        retDict[item.name] = item.picture
 
-    return Response(json.dumps({'score': score}))
+    return Response(json.dumps(retDict))
 
 
 def readDescriptions():

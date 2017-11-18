@@ -113,11 +113,8 @@ def predictionSystem(inp_trainData, inp_testData):
         result.set_dt(dt_values)
         result.set_bayes(bayes_values)
         result.name = name
+        result.picture = picture
         result.save()
-        retDict[name] = picture
-
-
-    return retDict
 
 def drawPrediction(y_name, y_1, y_2, y_3, x_values):
     import matplotlib
@@ -181,13 +178,3 @@ def predictionSystem_Helper(trainData, trainLabels, testData, testLabels, type=1
 trainData, testData = readData()
 
 predictionSystem(trainData, testData)
-
-
-default_list = []
-RecommendationResult.set_bayes(default_list)
-RecommendationResult.set_dt(default_list)
-RecommendationResult.set_features(default_list)
-RecommendationResult.set_mlp(default_list)
-RecommendationResult.name = "kaganbaba"
-RecommendationResult.picture = "hellosemih"
-RecommendationResult.save()
