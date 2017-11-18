@@ -17,9 +17,4 @@ class CustomerSerializer(serializers.ModelSerializer):
             "agriculture_insurance", "car_policies", "van_policies", "motorcycle_policies", "lorry_policies",
             "trailer_policies", "tractor_policies", "agricultural_machines_policies", "moped_policies", "life_insurances",
             "private_accident_insurance", "family_accidents_insurance", "disability_insurance", "fire_policies", "surfboard_policies",
-            "boat_policies", "bicycle_policies", "property_insurance_policies", "social_security_insurance_policies", "number_private_insurance",
-            "number_firms_insurance", "number_agriculture_insurance", "number_car_policies", "number_van_policies", "number_motorcycle_policies",
-            "number_lorry_policies", "number_trailer_policies", "number_tractor_policies", "number_agricultural_machines_policies", "number_moped_policies",
-            "number_life_insurances", "number_private_accident_insurance", "number_family_accidents_insurance", "number_disability_insurance", "number_fire_policies",
-            "number_surfboard_policies", "number_boat_policies", "number_bicycle_policies", "number_property_insurance_policies", "number_social_security_insurance_policies",
-            "number_mobile_home_policies")
+            "boat_policies", "bicycle_policies", "property_insurance_policies", "social_security_insurance_policies")
