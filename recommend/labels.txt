@@ -2,7 +2,7 @@
 
 2 MAANTHUI Number of houses 1 - 10
 
-3 MGEMOMV Avg size household 1 - 6
+3 MGEMOMV Avg size household 1 – 6
 
 4 MGEMLEEF Avg age see L1
 

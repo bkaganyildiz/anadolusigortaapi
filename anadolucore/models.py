@@ -10,9 +10,8 @@ from .choices import (
         L3,
         L4
     )
-from enumfields import EnumField
-# Create your models here.
 
+# Create your models here.
 class Customer(models.Model):
     isTest = models.BooleanField(default=False)
     index = models.IntegerField(default=0)
