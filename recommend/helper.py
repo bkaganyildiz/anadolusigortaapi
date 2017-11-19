@@ -16,6 +16,8 @@ from sklearn.naive_bayes import GaussianNB
 class recommend_utils():
     @staticmethod
     def getCorrelationMatrix(train_data,y_indexes,x_indexes, description):
+        import matplotlib
+        matplotlib.use("qt4agg")
         import matplotlib.pyplot as plt
         import seaborn as sns
         sns.set(font_scale=2)
@@ -23,7 +25,7 @@ class recommend_utils():
         y_final = []
         for index in y_indexes:
             y_final.append(corr.columns[index])
-        plt.subplots(figsize=(25,20))
+        plt.subplots(figsize=(len(y_indexes)*5,len(x_indexes)*5))
         plt.title('Correlation of Features', fontsize=25)
         x_names = [description[x] for x in x_indexes]
         y_names = [description[y] for y in y_indexes]
@@ -46,6 +48,8 @@ class recommend_utils():
 
     @staticmethod
     def getCountPlot(train_data,x, description):
+        import matplotlib
+        matplotlib.use("qt4agg")
         import matplotlib.pyplot as plt
         import seaborn as sns
         sns.set(font_scale=2)
@@ -60,6 +64,8 @@ class recommend_utils():
 
     @staticmethod
     def getViolinPlot(train_data,descriptions, x,y):
+        import matplotlib
+        matplotlib.use("qt4agg")
         import matplotlib.pyplot as plt
         import seaborn as sns
         sns.set(font_scale=2)

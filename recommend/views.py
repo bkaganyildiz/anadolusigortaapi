@@ -114,6 +114,8 @@ def getAssociationRules(request):
     descriptions = readDescriptions()
 
     ret = recommend_utils.associationFinder(TRAIN_DATA, lhs, minSupport)
+    ret = filter(lambda x: x['confidence'] >= minConfidence, ret)
+
     for item in ret:
         item['dest'] = descriptions[item['dest']]["label"]
         item['source'] = map(lambda x: descriptions[x]["label"], item['source'])
@@ -121,7 +123,6 @@ def getAssociationRules(request):
         item['support'] = "%.3f" % item['support']
         item['lift'] = "%.3f" % item['lift']
 
-    ret = filter(lambda x: x['confidence'] >= minConfidence, ret)
     return Response(json.dumps({'associations': ret}))
 
 @api_view(['GET',])
