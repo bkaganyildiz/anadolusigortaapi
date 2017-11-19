@@ -33,8 +33,7 @@ class recommend_utils():
                     yticklabels=x_names,
                     annot=True,
                      linewidths=.5,
-                     square=True,
-                     cmap="Blues")
+                     square=True)
         plt.savefig('correlation.png')
         plt.clf()
         plt.close()
@@ -61,8 +60,6 @@ class recommend_utils():
 
     @staticmethod
     def getViolinPlot(train_data,descriptions, x,y):
-        import matplotlib
-        matplotlib.use("qt4agg")
         import matplotlib.pyplot as plt
         import seaborn as sns
         sns.set(font_scale=2)

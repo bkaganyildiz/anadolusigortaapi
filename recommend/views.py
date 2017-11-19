@@ -145,7 +145,7 @@ def predictUser(request):
     selectedFeatures = [0, 9, 30, 31, 41, 42]
     userValues = []
     for item in selectedFeatures:
-        userValues.append(body[str(item)])
+        userValues.append(int(body[str(item)]))
     retDict = recommend_utils.predictUser(TRAIN_DATA, TEST_DATA, userValues, selectedFeatures)
     return Response(json.dumps(retDict))
 
